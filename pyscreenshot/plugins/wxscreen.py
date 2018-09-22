@@ -21,12 +21,15 @@ class WxScreen(object):
             self.app = wx.App()
         screen = wx.ScreenDC()
         size = screen.GetSize()
+        if bbox is None:
+            bbox = [0, 0, size[0], size[1]]
+        x, y, w, h = bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]
         if hasattr(wx, "Bitmap"):
-            bmp = wx.Bitmap(size[0], size[1])
+            bmp = wx.Bitmap(w, h)
         else:
-            bmp = wx.EmptyBitmap(size[0], size[1])
+            bmp = wx.EmptyBitmap(w, h)
         mem = wx.MemoryDC(bmp)
-        mem.Blit(0, 0, size[0], size[1], screen, 0, 0)
+        mem.Blit(0, 0, w, h, screen, x, y)
         del mem
         if hasattr(bmp, "ConvertToImage"):
             myWxImage = bmp.ConvertToImage()
@@ -39,8 +42,6 @@ class WxScreen(object):
         else:
             # for PIL
             im.fromstring(myWxImage.GetData())
-        if bbox:
-            im = im.crop(bbox)
         return im
 
     def grab_to_file(self, filename, bbox=None):
