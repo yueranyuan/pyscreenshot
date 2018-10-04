@@ -24,7 +24,7 @@ class WxScreen(object):
         if bbox is None:
             bbox = [0, 0, size[0], size[1]]
         x, y, w, h = bbox[0], bbox[1], bbox[2] - bbox[0], bbox[3] - bbox[1]
-        if hasattr(wx, "Bitmap"):
+        if wx.__version__ >= '4':
             bmp = wx.Bitmap(w, h)
         else:
             bmp = wx.EmptyBitmap(w, h)
